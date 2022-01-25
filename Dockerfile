@@ -1,7 +1,7 @@
 FROM alpine/git
 WORKDIR /app
 RUN git clone https://github.com/mflora4/manuel_flora_adc_2021.git
-RUN manuel_flora_adc_2021 gitprotocol
+RUN mv manuel_flora_adc_2021 gitprotocol
 
 FROM maven:3.5-jdk-8-alpine
 WORKDIR /app

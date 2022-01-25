@@ -5,9 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>it.adc.p2p</groupId>
-  <artifactId>gitprotocol</artifactId>
+  <artifactId>manuel_flora_adc_2021</artifactId>
   <version>1.0</version>
-  <packaging>jar</packaging>
 
   <name>gitprotocol</name>
   <!-- FIXME change it to the project's website -->

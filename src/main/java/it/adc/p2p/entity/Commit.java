@@ -1,9 +1,10 @@
 package it.adc.p2p.entity;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class Commit {
+public class Commit implements Serializable {
 
     public Commit(int peerId, String message, LocalTime time) {
         this.peerId = peerId;

@@ -99,7 +99,6 @@ public class Repository implements Serializable {
         }
     }
 
-    private static final long serialVersionUID = 1L;
     private File directory;
     private String name;
     private HashSet<PeerAddress> peerAddresses;

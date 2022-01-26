@@ -44,7 +44,7 @@ public class Repository implements Serializable {
     }
 
     public boolean checkCommits(ArrayList<Commit> compareList) {
-        return commits.equals(compareList);
+        return commits.containsAll(compareList);
     }
 
     public boolean addFiles(ArrayList<File> files) {

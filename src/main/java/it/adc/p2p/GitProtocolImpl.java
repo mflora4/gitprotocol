@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.time.LocalTime;
 import java.util.ArrayList;
+
+import it.adc.p2p.entity.Commit;
 import it.adc.p2p.entity.Repository;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FuturePut;
@@ -160,6 +162,18 @@ public class GitProtocolImpl implements GitProtocol {
 			e.printStackTrace();
 		}
         return false;
+	}
+
+	public boolean showCommits(String repo_name) {
+		if (repository == null)
+			return false;
+		if (!repository.getName().equals(repo_name))
+			return false;
+
+		for (Commit c : repository.getCommits())
+			System.out.println(c);
+
+		return true;
 	}
 
 	public void leaveNetwork() {

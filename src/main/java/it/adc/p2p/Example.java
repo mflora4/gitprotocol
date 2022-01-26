@@ -104,6 +104,14 @@ public class Example {
                         terminal.printf("\n" + pull.toUpperCase() + "\n");
                         break;
                     case 6:
+                        terminal.printf("\nENTER REPOSITORY NAME\n");
+                        name = textIO.newStringInputReader()
+                                .withDefaultValue("default-repository")
+                                .read("Repository name:");
+                        if (!peer.showCommits(name))
+                            terminal.printf("\nNO COMMIT\n");
+                        break;
+                    case 7:
                         terminal.printf("\nARE YOU SURE TO LEAVE THE NETWORK\n");
                         boolean exit = textIO.newBooleanInputReader().withDefaultValue(false).read("exit?");
                         if (exit) {
@@ -129,7 +137,8 @@ public class Example {
 		terminal.printf("\n3 - COMMIT\n");
 		terminal.printf("\n4 - PUSH\n");
         terminal.printf("\n5 - PULL\n");
-		terminal.printf("\n6 - EXIT\n");
+        terminal.printf("\n6 - SHOW COMMITS\n");
+		terminal.printf("\n7 - EXIT\n");
 	}
 
     public static ArrayList<File> createFiles(TextTerminal terminal, TextIO textIO) {

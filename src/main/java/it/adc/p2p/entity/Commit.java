@@ -32,6 +32,10 @@ public class Commit {
                 this.time.equals(commit.time));
     }
 
+    public String toString() {
+        return "Commit[id = " + this.id + ", message = " + this.message + ", time = " + this.time + "]";
+    }
+
     private int id;
     private String message, time;
 

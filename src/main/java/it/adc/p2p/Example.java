@@ -84,9 +84,8 @@ public class Example {
                         if (peer.getRepository() == null)
                             terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
                         else {
-                            files = peer.getRepository().getFiles();
-                            int size = files.size();
-                            if (size <= 0)
+                            files = (HashSet<File>) peer.getRepository().getFiles().clone();
+                            if (files.isEmpty())
                                 terminal.printf("\nNO FILE\n");
                             else {
                                 terminal.printf("\nENTER REPOSITORY NAME\n");
@@ -136,25 +135,33 @@ public class Example {
                         terminal.printf("\n" + pull.toUpperCase() + "\n");
                         break;
                     case 7:
-                        files = peer.getRepository().getFiles();
-                        if (files.isEmpty())
-                            terminal.printf("\nNO FILE\n");
+                        if (peer.getRepository() == null)
+                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
                         else {
-                            terminal.printf("\n-----FILES-----\n");
-                            for (File f : files)
-                                terminal.printf("\n" + f.getName() + "\n");
-                            terminal.printf("\n-----FILES-----\n");
+                            files = peer.getRepository().getFiles();
+                            if (files.isEmpty())
+                                terminal.printf("\nNO FILE\n");
+                            else {
+                                terminal.printf("\n-----FILES-----\n");
+                                for (File f : files)
+                                    terminal.printf("\n" + f.getName() + "\n");
+                                terminal.printf("\n-----FILES-----\n");
+                            }
                         }
                         break;
                     case 8:
-                        ArrayList<Commit> commits = peer.getRepository().getCommits();
-                        if (commits.isEmpty())
-                            terminal.printf("\nNO COMMIT\n");
+                        if (peer.getRepository() == null)
+                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
                         else {
-                            terminal.printf("\n-----COMMITS-----\n");
-                            for (Commit c : commits)
-                                terminal.printf("\n" + c + "\n");
-                            terminal.printf("\n-----COMMITS-----\n");
+                            ArrayList<Commit> commits = peer.getRepository().getCommits();
+                            if (commits.isEmpty())
+                                terminal.printf("\nNO COMMIT\n");
+                            else {
+                                terminal.printf("\n-----COMMITS-----\n");
+                                for (Commit c : commits)
+                                    terminal.printf("\n" + c + "\n");
+                                terminal.printf("\n-----COMMITS-----\n");
+                            }
                         }
                         break;
                     case 9:

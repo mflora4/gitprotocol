@@ -81,23 +81,29 @@ public class Example {
                             terminal.printf("\nFILES ADDED TO REPO\n", name);
                         break;
                     case 3:
-                        files = peer.getRepository().getFiles();
-                        int size = files.size();
-                        if (size > 0) {
-                            terminal.printf("\nENTER REPOSITORY NAME\n");
-                            name = textIO.newStringInputReader()
-                                    .withDefaultValue("default-repo")
-                                    .read("Repo name:");
-                            terminal.printf("\nDO YOU WANT TO REMOVE ALL FILES?\n");
-                            boolean all = textIO.newBooleanInputReader().withDefaultValue(false).read("all files?");
-                            if (all)
-                                files.clear();
-                            else
-                                files = removeFiles(terminal, textIO, files);
-                            if (!peer.removeFilesFromRepository(name, files))
-                                terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
-                            else
-                                terminal.printf("\nFILES REMOVED FROM REPO\n", name);
+                        if (peer.getRepository() == null)
+                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
+                        else {
+                            files = peer.getRepository().getFiles();
+                            int size = files.size();
+                            if (size <= 0)
+                                terminal.printf("\nNO FILE\n");
+                            else {
+                                terminal.printf("\nENTER REPOSITORY NAME\n");
+                                name = textIO.newStringInputReader()
+                                        .withDefaultValue("default-repo")
+                                        .read("Repo name:");
+                                terminal.printf("\nDO YOU WANT TO REMOVE ALL FILES?\n");
+                                boolean all = textIO.newBooleanInputReader().withDefaultValue(false).read("all files?");
+                                if (all)
+                                    files.clear();
+                                else
+                                    files = removeFiles(terminal, textIO, files);
+                                if (!peer.removeFilesFromRepository(name, files))
+                                    terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
+                                else
+                                    terminal.printf("\nFILES REMOVED FROM REPO\n", name);
+                            }
                         }
                         break;
                     case 4:

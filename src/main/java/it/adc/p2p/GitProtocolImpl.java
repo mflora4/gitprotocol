@@ -172,7 +172,10 @@ public class GitProtocolImpl implements GitProtocol {
 	}
 
 	public Repository getRepository() {
-		return repository;
+		if (repository != null)
+			return repository;
+
+		return null;
 	}
 
 	public void leaveNetwork() {

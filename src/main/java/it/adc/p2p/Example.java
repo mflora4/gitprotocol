@@ -202,6 +202,7 @@ public class Example {
         terminal.printf("\nENTER FILES NUMBER TO REMOVE\n");
         int n = textIO.newIntInputReader()
                 .withDefaultValue(1)
+                .withMaxVal(files.size())
                 .read("Number:");
         
         int i = 0;

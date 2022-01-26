@@ -81,15 +81,19 @@ public class Example {
                             terminal.printf("\nFILES ADDED TO REPO\n", name);
                         break;
                     case 3:
-                        terminal.printf("\nENTER REPOSITORY NAME\n");
-                        name = textIO.newStringInputReader()
-                                .withDefaultValue("default-repo")
-                                .read("Repo name:");
-                        files = removeFiles(terminal, textIO, peer.getRepository().getFiles());
-                        if (!peer.removeFilesFromRepository(name, files))
-                            terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
-                        else
-                            terminal.printf("\nFILES REMOVED FROM REPO\n", name);
+                        files = peer.getRepository().getFiles();
+                        int size = files.size();
+                        if (size > 0) {
+                            terminal.printf("\nENTER REPOSITORY NAME\n");
+                            name = textIO.newStringInputReader()
+                                    .withDefaultValue("default-repo")
+                                    .read("Repo name:");
+                            files = removeFiles(terminal, textIO, files);
+                            if (!peer.removeFilesFromRepository(name, files))
+                                terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
+                            else
+                                terminal.printf("\nFILES REMOVED FROM REPO\n", name);
+                        }
                         break;
                     case 4:
                         terminal.printf("\nENTER REPOSITORY NAME\n");
@@ -178,6 +182,7 @@ public class Example {
         terminal.printf("\nENTER FILES NUMBER TO ADD\n");
         int n = textIO.newIntInputReader()
                 .withDefaultValue(1)
+                .withMinVal(0)
                 .read("Number:");
         
         ArrayList<File> files = new ArrayList<>();
@@ -202,6 +207,7 @@ public class Example {
         terminal.printf("\nENTER FILES NUMBER TO REMOVE\n");
         int n = textIO.newIntInputReader()
                 .withDefaultValue(1)
+                .withMinVal(0)
                 .withMaxVal(files.size())
                 .read("Number:");
         

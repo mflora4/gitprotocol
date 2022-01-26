@@ -115,7 +115,7 @@ public class Example {
                         HashSet<File> files = peer.getFiles(name);
                         if (files == null)
                             terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
-                        if (files.isEmpty())
+                        else if (files.isEmpty())
                             terminal.printf("\nNO FILE\n");
                         else {
                             terminal.printf("\n-----FILES-----\n");
@@ -132,7 +132,7 @@ public class Example {
                         ArrayList<Commit> commits = peer.getCommits(name);
                         if (commits == null)
                             terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
-                        if (commits.isEmpty())
+                        else if (commits.isEmpty())
                             terminal.printf("\nNO COMMIT\n");
                         else {
                             terminal.printf("\n-----COMMITS-----\n");

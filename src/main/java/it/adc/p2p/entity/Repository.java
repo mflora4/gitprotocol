@@ -66,8 +66,10 @@ public class Repository implements Serializable {
             this.files.clear();
             return true;
         }
-        if (!this.files.containsAll(files))
+        if (!this.files.containsAll(files)) {
+            System.out.println("x");
             return false;
+        }
 
         this.files.clear();
         return this.files.addAll(files);

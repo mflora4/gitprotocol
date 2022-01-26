@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 
-import it.adc.p2p.entity.Commit;
 import it.adc.p2p.entity.Repository;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FuturePut;
@@ -133,11 +133,11 @@ public class GitProtocolImpl implements GitProtocol {
 			FutureGet futureGet = _dht.get(Number160.createHash(_repo_name)).start();
 			futureGet.awaitUninterruptibly();
 			if (futureGet.isSuccess()) {
-				if (!futureGet.isEmpty())
+				Collection<Data> datas = futureGet.dataMap().values();
+				if (datas.isEmpty())
 					return null;
 
-				Repository repo = (Repository) futureGet.dataMap().values().iterator().next().object();
-				return repo;
+				return (Repository) futureGet.dataMap().values().iterator().next().object();
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();

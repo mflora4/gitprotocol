@@ -10,18 +10,12 @@ import net.tomp2p.peers.PeerAddress;
 
 public class Repository implements Serializable {
 
-    public Repository(File directory, String name, PeerAddress peerAddress, int id) {
-        this.directory = directory;
+    public Repository(File directory, String name, PeerAddress peerAddress) {
         this.name = name;
         peerAddresses = new HashSet<>();
         peerAddresses.add(peerAddress);
-        this.id = id;
         files = new HashSet<>();
         commits = new ArrayList<>();
-    }
-
-    public String getDirectoryName() {
-        return directory.getName();
     }
 
     public String getName() {
@@ -30,10 +24,6 @@ public class Repository implements Serializable {
 
     public HashSet<PeerAddress> getContributors() {
         return peerAddresses;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public HashSet<File> getFiles() {
@@ -53,21 +43,18 @@ public class Repository implements Serializable {
         return this.peerAddresses.addAll(peerAddresses);
     }
 
-    public int checkCommits(ArrayList<Commit> compareList) {
+    public boolean checkCommits(ArrayList<Commit> compareList) {
         if (commits.equals(compareList))
-            return 0;
+            return true;
         
-        if (commits.size() > compareList.size())
-            return 1;
-        else
-            return 2;
+        return false;
     }
 
     public boolean addFiles(ArrayList<File> files) {
         if (files.isEmpty())
             return false;
         if (this.files.containsAll(files))
-            return false;
+            return true;
 
         return this.files.addAll(files);
     }
@@ -76,7 +63,7 @@ public class Repository implements Serializable {
         if (files.isEmpty())
             return false;
         if (this.files.containsAll(files))
-            return false;
+            return true;
 
         return this.files.addAll(files);
     }
@@ -90,18 +77,17 @@ public class Repository implements Serializable {
             return false;
         if (this.commits.containsAll(commits))
             return true;
-        if (!this.commits.addAll(commits))
-            return false;
-        else {
-            this.commits.sort(new SortByTime());
-            return true;
-        }
+
+        for(Commit commit : commits)
+            if (!this.commits.contains(commit))
+                this.commits.add(commit);
+
+        this.commits.sort(new SortByTime());
+        return true;
     }
 
-    private File directory;
     private String name;
     private HashSet<PeerAddress> peerAddresses;
-    private int id;
     private HashSet<File> files;
     private ArrayList<Commit> commits;
     

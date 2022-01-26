@@ -6,19 +6,11 @@ import java.time.format.DateTimeFormatter;
 
 public class Commit implements Serializable {
 
-    public Commit(int peerId, String message, LocalTime time) {
-        this.peerId = peerId;
+    public Commit(int author, String message, LocalTime time) {
+        this.author = author;
         this.message = message;
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("HH:mm");
         this.time = time.format(myFormatObj);
-    }
-
-    private int getPeerId() {
-        return peerId;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public String getTime() {
@@ -29,17 +21,17 @@ public class Commit implements Serializable {
     public boolean equals(Object object) {
         Commit commit = (Commit) object;
 
-        return (this.peerId == commit.peerId &&
+        return (this.author == commit.author &&
                 this.message.equals(commit.message) &&
                 this.time.equals(commit.time));
     }
 
     @Override
     public String toString() {
-        return "Commit[peerId = " + this.peerId + ", message = " + this.message + ", time = " + this.time + "]";
+        return "Commit[author = " + this.author + ", message = " + this.message + ", time = " + this.time + "]";
     }
 
-    private int peerId;
+    private int author;
     private String message, time;
 
 }

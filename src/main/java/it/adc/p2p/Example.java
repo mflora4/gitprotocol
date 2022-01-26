@@ -33,7 +33,7 @@ public class Example {
 			public Object parseMessage(Object obj) {
 				TextIO textIO = TextIoFactory.getTextIO();
 				TextTerminal terminal = textIO.getTextTerminal();
-				terminal.printf("\n" + peerid + "] (Direct Message Received) " + obj + "\n\n");
+				terminal.printf("\n[" + peerid + "] (Direct Message Received) " + obj + "\n\n");
 				return "success";
 			}
 
@@ -111,20 +111,24 @@ public class Example {
                     case 6:
                         HashSet<File> files = peer.getRepository().getFiles();
                         if (files.isEmpty())
-                            terminal.printf("\nNO COMMIT\n");
+                            terminal.printf("\nNO FILE\n");
                         else {
-                            terminal.printf("\nFILES\n");
+                            terminal.printf("\n-----FILES-----\n");
                             for (File f : files)
                                 terminal.printf("\n" + f.getName() + "\n");
+                            terminal.printf("\n-----FILES-----\n");
                         }
                         break;
                     case 7:
                         ArrayList<Commit> commits = peer.getRepository().getCommits();
                         if (commits.isEmpty())
                             terminal.printf("\nNO COMMIT\n");
-                        else
+                        else {
+                            terminal.printf("\n-----COMMITS-----\n");
                             for (Commit c : commits)
                                 terminal.printf("\n" + c + "\n");
+                            terminal.printf("\n-----COMMITS-----\n");
+                        }
                         break;
                     case 8:
                         terminal.printf("\nARE YOU SURE TO LEAVE THE NETWORK\n");

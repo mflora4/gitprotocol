@@ -27,12 +27,13 @@ public class GitProtocolImpl implements GitProtocol {
 	final private PeerDHT _dht;
 	final private int DEFAULT_MASTER_PORT = 4000;
     private Repository repository;
-	final private int id;
+	final private int author;
+	private boolean commit = false;
 
 	public GitProtocolImpl(int _id, String _master_peer, final MessageListener _listener) throws Exception {
 		peer = new PeerBuilder(Number160.createHash(_id)).ports(DEFAULT_MASTER_PORT + _id).start();
 		_dht = new PeerBuilderDHT(peer).start();
-		id = _id;
+		author = _id;
 		
 		FutureBootstrap fb = peer.bootstrap().inetAddress(InetAddress.getByName(_master_peer)).ports(DEFAULT_MASTER_PORT).start();
 		fb.awaitUninterruptibly();
@@ -51,7 +52,7 @@ public class GitProtocolImpl implements GitProtocol {
     @Override
     public boolean createRepository(String _repo_name, File _directory) {
 		if (repository == null) {
-			repository = new Repository(_directory, _repo_name, _dht.peer().peerAddress(), id);
+			repository = new Repository(_directory, _repo_name, _dht.peer().peerAddress());
 			return true;
 		}
 		
@@ -68,8 +69,10 @@ public class GitProtocolImpl implements GitProtocol {
 
     @Override
     public boolean commit(String _repo_name, String _message) {
-		if (repository.getName().equals(_repo_name))
-            return repository.addCommit(id, _message, LocalTime.now());
+		if (repository.getName().equals(_repo_name) && !commit) {
+			commit = true;
+            return repository.addCommit(author, _message, LocalTime.now());
+		}
         
 		return false;
     }
@@ -82,21 +85,17 @@ public class GitProtocolImpl implements GitProtocol {
 			return "\"" + _repo_name + "\" repo not found";
 		
 		Repository repo = getRepoFromDHT(_repo_name);
-		if (repo == null)
+		if (repo == null || repository.checkCommits(repo.getCommits())) {
+			if (!commit)
+				return "you should do the commit";
+			
 			if (!saveRepoOnDHT(_repo_name, repository))
 				return "push error";
-			else
+			else {
+				commit = false;
 				return "push done";
-
-		int check = repository.checkCommits(repo.getCommits());
-		if (check == 0)
-			return "maybe, you should do the commit";
-		else if (check == 1)
-			if (!saveRepoOnDHT(_repo_name, repository))
-				return "push error";
-			else
-				return "push done!";
-		else
+			}
+		} else
 			return "pull is required";
     }
 
@@ -111,16 +110,15 @@ public class GitProtocolImpl implements GitProtocol {
 		if (repo == null)
 			return "\"" + _repo_name + "\" repo not found";
 		
-		int check = repository.checkCommits(repo.getCommits());
-		if (check == 0)
+		if (repository.checkCommits(repo.getCommits()))
 			return "the repo is already updated";
 		else {
 			if (!repository.addContributors(repo.getContributors()))
-				return "adding contributos error";
+				return "adding contributos error in pull";
 			if (!repository.addFiles(repo.getFiles()))
-				return "adding files error";
+				return "adding files error in pull";
 			if (!repository.addCommits(repo.getCommits()))
-				return "adding commits error";
+				return "adding commits error in pull";
 			
 			return "pull done!";
 		}
@@ -150,7 +148,7 @@ public class GitProtocolImpl implements GitProtocol {
 			if (futurePut.isSuccess()) {
 				for (PeerAddress peerAddress : repo.getContributors()) {
 					if (!peerAddress.equals(_dht.peer().peerAddress())) {
-						FutureDirect futureDirect = _dht.peer().sendDirect(peerAddress).object("Peer " + id + ": pushed").start();
+						FutureDirect futureDirect = _dht.peer().sendDirect(peerAddress).object("[" + author + "] has just pushed").start();
 						futureDirect.awaitUninterruptibly();
 					}
 				}

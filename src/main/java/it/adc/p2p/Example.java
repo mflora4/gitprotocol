@@ -164,13 +164,12 @@ public class Example {
     public static void printMenu(TextTerminal terminal) {
 		terminal.printf("\n1 - CREATE REPO\n");
 		terminal.printf("\n2 - ADD FILES TO REPO\n");
-        terminal.printf("\n3 - REMOVE FILES FROM REPO\n");
-		terminal.printf("\n4 - COMMIT\n");
-		terminal.printf("\n5 - PUSH\n");
-        terminal.printf("\n6 - PULL\n");
-        terminal.printf("\n7 - SHOW FILES\n");
-        terminal.printf("\n8 - SHOW COMMITS\n");
-		terminal.printf("\n9 - EXIT\n");
+		terminal.printf("\n3 - COMMIT\n");
+		terminal.printf("\n4 - PUSH\n");
+        terminal.printf("\n5 - PULL\n");
+        terminal.printf("\n6 - SHOW FILES\n");
+        terminal.printf("\n7 - SHOW COMMITS\n");
+		terminal.printf("\n8 - EXIT\n");
 	}
 
     public static ArrayList<File> createFiles(TextTerminal terminal, TextIO textIO) {

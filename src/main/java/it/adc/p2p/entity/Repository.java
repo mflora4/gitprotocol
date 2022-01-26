@@ -1,13 +1,14 @@
 package it.adc.p2p.entity;
 
 import java.io.File;
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import net.tomp2p.peers.PeerAddress;
 
-public class Repository {
+public class Repository implements Serializable {
 
     public Repository(File directory, String name, PeerAddress peerAddress, int id) {
         this.directory = directory;

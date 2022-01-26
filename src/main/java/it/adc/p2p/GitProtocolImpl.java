@@ -137,7 +137,7 @@ public class GitProtocolImpl implements GitProtocol {
 				if (datas.isEmpty())
 					return null;
 
-				return (Repository) futureGet.dataMap().values().iterator().next().object();
+				return (Repository)futureGet.dataMap().values().iterator().next().object();
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();

@@ -167,7 +167,7 @@ public class GitProtocolImpl implements GitProtocol {
 	public HashSet<File> getFiles(String _repo_name) {
 		if (repository != null)
 			if (repository.getName().equals(_repo_name))
-				return (HashSet<File>) repository.getFiles().clone();
+				return repository.getFiles();
 
 		return null;
 	}

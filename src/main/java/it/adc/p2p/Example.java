@@ -64,7 +64,7 @@ public class Example {
 					            .withDefaultValue("default-repository")
                                 .read("Repository name:");
                         if (!peer.createRepository(name, dir))
-                            terminal.printf("\nREPOSITORY %s ALREADY CREATED\n");
+                            terminal.printf("\nREPOSITORY %s ALREADY CREATED\n", name);
                         else
                             terminal.printf("\nREPOSITORY %s SUCCESFULLY CREATED\n", name);
                         break;

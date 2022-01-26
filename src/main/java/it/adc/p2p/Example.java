@@ -9,6 +9,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+import it.adc.p2p.entity.Commit;
+
 public class Example {
 
     @Option(name = "-m", aliases = "--masterip", usage = "the master peer ip address", required = true)
@@ -104,12 +106,12 @@ public class Example {
                         terminal.printf("\n" + pull.toUpperCase() + "\n");
                         break;
                     case 6:
-                        terminal.printf("\nENTER REPOSITORY NAME\n");
-                        name = textIO.newStringInputReader()
-                                .withDefaultValue("default-repository")
-                                .read("Repository name:");
-                        if (!peer.showCommits(name))
+                        ArrayList<Commit> commits = peer.getRepository().getCommits();
+                        if (commits.isEmpty())
                             terminal.printf("\nNO COMMIT\n");
+                        else
+                            for (Commit c : commits)
+                                terminal.printf("\n" + c + "\n");
                         break;
                     case 7:
                         terminal.printf("\nARE YOU SURE TO LEAVE THE NETWORK\n");

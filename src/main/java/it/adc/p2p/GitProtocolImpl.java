@@ -164,16 +164,8 @@ public class GitProtocolImpl implements GitProtocol {
         return false;
 	}
 
-	public boolean showCommits(String repo_name) {
-		if (repository == null)
-			return false;
-		if (!repository.getName().equals(repo_name))
-			return false;
-
-		for (Commit c : repository.getCommits())
-			System.out.println(c);
-
-		return true;
+	public Repository getRepository() {
+		return repository;
 	}
 
 	public void leaveNetwork() {

@@ -6,6 +6,7 @@ import java.net.InetAddress;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import it.adc.p2p.entity.Repository;
 import net.tomp2p.dht.FutureGet;
@@ -61,18 +62,20 @@ public class GitProtocolImpl implements GitProtocol {
 
     @Override
     public boolean addFilesToRepository(String _repo_name, ArrayList<File> files) {
-		if (repository.getName().equals(_repo_name))
-			return repository.addFiles(files);
+		if (repository != null)
+			if (repository.getName().equals(_repo_name))
+				return repository.addFiles(files);
 
 		return false;
     }
 
     @Override
     public boolean commit(String _repo_name, String _message) {
-		if (repository.getName().equals(_repo_name) && !commit) {
-			commit = true;
-            return repository.addCommit(author, _message, LocalTime.now());
-		}
+		if (repository != null)
+			if (repository.getName().equals(_repo_name) && !commit) {
+				commit = true;
+				return repository.addCommit(author, _message, LocalTime.now());
+			}
         
 		return false;
     }
@@ -84,12 +87,12 @@ public class GitProtocolImpl implements GitProtocol {
 		if (!repository.getName().equals(_repo_name))
 			return "\"" + _repo_name + "\" repo not found";
 		
-		Repository repo = getRepoFromDHT(_repo_name);
+		Repository repo = getRepoFromDHT();
 		if (repo == null || repository.checkCommits(repo.getCommits())) {
 			if (!commit)
 				return "you should do the commit";
 			
-			if (!saveRepoOnDHT(_repo_name, repository))
+			if (!saveRepoOnDHT())
 				return "push error";
 			else {
 				commit = false;
@@ -106,7 +109,7 @@ public class GitProtocolImpl implements GitProtocol {
 		if (!repository.getName().equals(_repo_name))
 			return "\"" + _repo_name + "\" repo not found";
 		
-		Repository repo = getRepoFromDHT(_repo_name);
+		Repository repo = getRepoFromDHT();
 		if (repo == null)
 			return "\"" + _repo_name + "\" repo not found";
 		
@@ -124,9 +127,9 @@ public class GitProtocolImpl implements GitProtocol {
 		}
     }
 
-	private Repository getRepoFromDHT(String _repo_name) {
+	private Repository getRepoFromDHT() {
 		try {
-			FutureGet futureGet = _dht.get(Number160.createHash(_repo_name)).start();
+			FutureGet futureGet = _dht.get(Number160.createHash(repository.getName())).start();
 			futureGet.awaitUninterruptibly();
 			if (futureGet.isSuccess()) {
 				Collection<Data> datas = futureGet.dataMap().values();
@@ -141,12 +144,12 @@ public class GitProtocolImpl implements GitProtocol {
         return null;
 	}
 
-	private boolean saveRepoOnDHT(String _repo_name, Repository repo) {
+	private boolean saveRepoOnDHT() {
 		try {
-			FuturePut futurePut = _dht.put(Number160.createHash(_repo_name)).data(new Data(repo)).start();
+			FuturePut futurePut = _dht.put(Number160.createHash(repository.getName())).data(new Data(repository)).start();
 			futurePut.awaitUninterruptibly();
 			if (futurePut.isSuccess()) {
-				for (PeerAddress peerAddress : repo.getContributors()) {
+				for (PeerAddress peerAddress : repository.getContributors()) {
 					if (!peerAddress.equals(_dht.peer().peerAddress())) {
 						FutureDirect futureDirect = _dht.peer().sendDirect(peerAddress).object("[" + author + "] has just pushed").start();
 						futureDirect.awaitUninterruptibly();
@@ -158,6 +161,14 @@ public class GitProtocolImpl implements GitProtocol {
 			e.printStackTrace();
 		}
         return false;
+	}
+
+	public boolean removeFilesFromRepository(String _repo_name, HashSet<File> files) {
+		if (repository != null)
+			if (repository.getName().equals(_repo_name))
+				return repository.removeFiles(files);
+
+		return false;
 	}
 
 	public Repository getRepository() {

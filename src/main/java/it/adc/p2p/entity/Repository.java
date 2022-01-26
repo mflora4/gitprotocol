@@ -43,15 +43,11 @@ public class Repository implements Serializable {
         return this.peerAddresses.addAll(peerAddresses);
     }
 
-    public boolean checkCommits(ArrayList<Commit> compareList) {
-        return commits.containsAll(compareList);
-    }
-
     public boolean addFiles(ArrayList<File> files) {
         if (files.isEmpty())
             return false;
         if (this.files.containsAll(files))
-            return true;
+            return false;
 
         return this.files.addAll(files);
     }
@@ -62,6 +58,18 @@ public class Repository implements Serializable {
         if (this.files.containsAll(files))
             return true;
 
+        return this.files.addAll(files);
+    }
+
+    public boolean removeFiles(HashSet<File> files) {
+        if (files.isEmpty()) {
+            this.files.clear();
+            return true;
+        }
+        if (!this.files.containsAll(files))
+            return false;
+
+        this.files.clear();
         return this.files.addAll(files);
     }
 
@@ -81,6 +89,10 @@ public class Repository implements Serializable {
 
         this.commits.sort(new SortByTime());
         return true;
+    }
+
+    public boolean checkCommits(ArrayList<Commit> compareList) {
+        return commits.containsAll(compareList);
     }
 
     private String name;

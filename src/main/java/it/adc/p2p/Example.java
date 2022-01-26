@@ -89,7 +89,7 @@ public class Example {
                         if (!peer.commit(name, message))
                             terminal.printf("\nERROR IN COMMIT\n");
                         else
-                            terminal.printf("\nCOMMIT SENT\n");
+                            terminal.printf("\nCOMMIT ADDED\n");
                         break;
                     case 4:
                         terminal.printf("\nENTER REPO NAME\n");

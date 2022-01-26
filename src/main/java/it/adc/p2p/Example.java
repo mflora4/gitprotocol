@@ -52,7 +52,7 @@ public class Example {
             while (true) {
                 printMenu(terminal);
 
-                int option = textIO.newIntInputReader().withMaxVal(6).withMinVal(1).read("Option");
+                int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(7).read("Option");
                 String name;
                 switch (option) {
                     case 1:

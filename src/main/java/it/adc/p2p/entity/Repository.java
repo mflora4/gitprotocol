@@ -66,18 +66,17 @@ public class Repository implements Serializable {
     public boolean addFiles(ArrayList<File> files) {
         if (files.isEmpty())
             return false;
+        if (this.files.containsAll(files))
+            return false;
 
-        for (File f : files)
-            this.files.add(f);
-
-        return true;
+        return this.files.addAll(files);
     }
 
     public boolean addFiles(HashSet<File> files) {
         if (files.isEmpty())
             return false;
         if (this.files.containsAll(files))
-            return true;
+            return false;
 
         return this.files.addAll(files);
     }

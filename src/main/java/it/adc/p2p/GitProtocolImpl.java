@@ -28,13 +28,11 @@ public class GitProtocolImpl implements GitProtocol {
 	final private int DEFAULT_MASTER_PORT = 4000;
     private Repository repository;
 	final private int id;
-	final private String peer_id;
 
 	public GitProtocolImpl(int _id, String _master_peer, final MessageListener _listener) throws Exception {
 		peer = new PeerBuilder(Number160.createHash(_id)).ports(DEFAULT_MASTER_PORT + _id).start();
 		_dht = new PeerBuilderDHT(peer).start();
 		id = _id;
-		peer_id = "peer " + id + ": ";
 		
 		FutureBootstrap fb = peer.bootstrap().inetAddress(InetAddress.getByName(_master_peer)).ports(DEFAULT_MASTER_PORT).start();
 		fb.awaitUninterruptibly();
@@ -79,52 +77,52 @@ public class GitProtocolImpl implements GitProtocol {
     @Override
     public String push(String _repo_name) {
 		if (repository == null)
-			return peer_id + "repo not created";
+			return "repo not created";
 		if (!repository.getName().equals(_repo_name))
-			return peer_id + "\"" + _repo_name + "\" repo not found";
+			return "\"" + _repo_name + "\" repo not found";
 		
 		Repository repo = getRepoFromDHT(_repo_name);
 		if (repo == null)
 			if (!saveRepoOnDHT(_repo_name, repository))
-				return peer_id + "push error";
+				return "push error";
 			else
-				return peer_id + "push done";
+				return "push done";
 
 		int check = repository.checkCommits(repo.getCommits());
 		if (check == 0)
-			return peer_id + "maybe, you should do the commit";
+			return "maybe, you should do the commit";
 		else if (check == 1)
 			if (!saveRepoOnDHT(_repo_name, repository))
-				return peer_id + "push error";
+				return "push error";
 			else
-				return peer_id + "push done!";
+				return "push done!";
 		else
-			return peer_id + "pull is required";
+			return "pull is required";
     }
 
     @Override
     public String pull(String _repo_name) {
         if (repository == null)
-			return peer_id + "repo not created";
+			return "repo not created";
 		if (!repository.getName().equals(_repo_name))
-			return peer_id + "\"" + _repo_name + "\" repo not found";
+			return "\"" + _repo_name + "\" repo not found";
 		
 		Repository repo = getRepoFromDHT(_repo_name);
 		if (repo == null)
-			return peer_id + "\"" + _repo_name + "\" repo not found";
+			return "\"" + _repo_name + "\" repo not found";
 		
 		int check = repository.checkCommits(repo.getCommits());
 		if (check == 0)
-			return peer_id + "the repo is already updated";
+			return "the repo is already updated";
 		else {
 			if (!repository.addContributors(repo.getContributors()))
-				return peer_id + "adding contributos error";
+				return "adding contributos error";
 			if (!repository.addFiles(repo.getFiles()))
-				return peer_id + "adding files error";
+				return "adding files error";
 			if (!repository.addCommits(repo.getCommits()))
-				return peer_id + "adding commits error";
+				return "adding commits error";
 			
-			return peer_id + "pull done!";
+			return "pull done!";
 		}
     }
 

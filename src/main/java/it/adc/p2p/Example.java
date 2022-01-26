@@ -64,7 +64,7 @@ public class Example {
 					            .withDefaultValue("default-repository")
                                 .read("Repository name:");
                         if (!peer.createRepository(name, dir))
-                            terminal.printf("\nERROR IN REPOSITORY CREATION\n");
+                            terminal.printf("\nREPOSITORY %s ALREADY CREATED\n");
                         else
                             terminal.printf("\nREPOSITORY %s SUCCESFULLY CREATED\n", name);
                         break;
@@ -112,9 +112,11 @@ public class Example {
                         HashSet<File> files = peer.getRepository().getFiles();
                         if (files.isEmpty())
                             terminal.printf("\nNO COMMIT\n");
-                        else
+                        else {
+                            terminal.printf("\nFILES\n");
                             for (File f : files)
                                 terminal.printf("\n" + f.getName() + "\n");
+                        }
                         break;
                     case 7:
                         ArrayList<Commit> commits = peer.getRepository().getCommits();

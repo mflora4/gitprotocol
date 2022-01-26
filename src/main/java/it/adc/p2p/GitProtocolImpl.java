@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import it.adc.p2p.entity.Commit;
 import it.adc.p2p.entity.Repository;
 import net.tomp2p.dht.FutureGet;
 import net.tomp2p.dht.FuturePut;
@@ -163,17 +164,18 @@ public class GitProtocolImpl implements GitProtocol {
         return false;
 	}
 
-	public boolean removeFilesFromRepository(String _repo_name, HashSet<File> files) {
+	public HashSet<File> getFiles(String _repo_name) {
 		if (repository != null)
 			if (repository.getName().equals(_repo_name))
-				return repository.removeFiles(files);
+				return (HashSet<File>) repository.getFiles().clone();
 
-		return false;
+		return null;
 	}
 
-	public Repository getRepository() {
+	public ArrayList<Commit> getCommits(String _repo_name) {
 		if (repository != null)
-			return repository;
+			if (repository.getName().equals(_repo_name))
+				return repository.getCommits();
 
 		return null;
 	}

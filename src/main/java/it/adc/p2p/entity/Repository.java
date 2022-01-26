@@ -61,19 +61,6 @@ public class Repository implements Serializable {
         return this.files.addAll(files);
     }
 
-    public boolean removeFiles(HashSet<File> files) {
-        if (files.isEmpty()) {
-            this.files.clear();
-            return true;
-        }
-        if (this.files.size() == files.size())
-            return false;
-
-        this.files.clear();
-        this.files = (HashSet<File>) files.clone();
-        return true;
-    }
-
     public boolean addCommit(int id, String message, LocalTime time) {
         return commits.add(new Commit(id, message, time));
     }

@@ -2,7 +2,6 @@ package it.adc.p2p;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.beryx.textio.TextIO;
@@ -50,13 +49,12 @@ public class Example {
             GitProtocolImpl peer = new GitProtocolImpl(id, master, new MessageListenerImpl(id));
 
             File dir = new File(id + "");
-            HashSet<File> files;
 
             terminal.printf("\nStaring peer id: %d on master node: %s\n", id, master);
             while (true) {
                 printMenu(terminal);
 
-                int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(9).read("Option");
+                int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(8).read("Option");
                 String name;
                 switch (option) {
                     case 1:
@@ -81,31 +79,6 @@ public class Example {
                             terminal.printf("\nFILES ADDED TO REPO\n", name);
                         break;
                     case 3:
-                        if (peer.getRepository() == null)
-                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
-                        else {
-                            files = (HashSet<File>) peer.getRepository().getFiles().clone();
-                            if (files.isEmpty())
-                                terminal.printf("\nNO FILE\n");
-                            else {
-                                terminal.printf("\nENTER REPOSITORY NAME\n");
-                                name = textIO.newStringInputReader()
-                                        .withDefaultValue("default-repo")
-                                        .read("Repo name:");
-                                terminal.printf("\nDO YOU WANT TO REMOVE ALL FILES?\n");
-                                boolean all = textIO.newBooleanInputReader().withDefaultValue(false).read("all files?");
-                                if (all)
-                                    files.clear();
-                                else
-                                    files = removeFiles(terminal, textIO, files);
-                                if (!peer.removeFilesFromRepository(name, files))
-                                    terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
-                                else
-                                    terminal.printf("\nFILES REMOVED FROM REPO\n", name);
-                            }
-                        }
-                        break;
-                    case 4:
                         terminal.printf("\nENTER REPOSITORY NAME\n");
                         name = textIO.newStringInputReader()
                                 .withDefaultValue("default-repo")
@@ -118,7 +91,7 @@ public class Example {
                         else
                             terminal.printf("\nCOMMIT SENT\n");
                         break;
-                    case 5:
+                    case 4:
                         terminal.printf("\nENTER REPO NAME\n");
                         name = textIO.newStringInputReader()
                                 .withDefaultValue("default-repo")
@@ -126,7 +99,7 @@ public class Example {
                         String push = peer.push(name);
                         terminal.printf("\n" + push.toUpperCase() + "\n");
                         break;
-                    case 6:
+                    case 5:
                         terminal.printf("\nENTER REPO NAME\n");
                         name = textIO.newStringInputReader()
                                 .withDefaultValue("default-repo")
@@ -134,37 +107,41 @@ public class Example {
                         String pull = peer.pull(name);
                         terminal.printf("\n" + pull.toUpperCase() + "\n");
                         break;
-                    case 7:
-                        if (peer.getRepository() == null)
+                    case 6:
+                        terminal.printf("\nENTER REPO NAME\n");
+                        name = textIO.newStringInputReader()
+                                .withDefaultValue("default-repo")
+                                .read("Repo name:");
+                        HashSet<File> files = peer.getFiles(name);
+                        if (files == null)
                             terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
+                        if (files.isEmpty())
+                            terminal.printf("\nNO FILE\n");
                         else {
-                            files = peer.getRepository().getFiles();
-                            if (files.isEmpty())
-                                terminal.printf("\nNO FILE\n");
-                            else {
-                                terminal.printf("\n-----FILES-----\n");
-                                for (File f : files)
-                                    terminal.printf("\n" + f.getName() + "\n");
-                                terminal.printf("\n-----FILES-----\n");
-                            }
+                            terminal.printf("\n-----FILES-----\n");
+                            for (File f : files)
+                                terminal.printf("\n" + f.getName() + "\n");
+                            terminal.printf("\n-----FILES-----\n");
+                        }
+                        break;
+                    case 7:
+                        terminal.printf("\nENTER REPO NAME\n");
+                        name = textIO.newStringInputReader()
+                                .withDefaultValue("default-repo")
+                                .read("Repo name:");
+                        ArrayList<Commit> commits = peer.getCommits(name);
+                        if (commits == null)
+                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
+                        if (commits.isEmpty())
+                            terminal.printf("\nNO COMMIT\n");
+                        else {
+                            terminal.printf("\n-----COMMITS-----\n");
+                            for (Commit c : commits)
+                                terminal.printf("\n" + c + "\n");
+                            terminal.printf("\n-----COMMITS-----\n");
                         }
                         break;
                     case 8:
-                        if (peer.getRepository() == null)
-                            terminal.printf("\nFIRST OF ALL, CREATE A REPO\n");
-                        else {
-                            ArrayList<Commit> commits = peer.getRepository().getCommits();
-                            if (commits.isEmpty())
-                                terminal.printf("\nNO COMMIT\n");
-                            else {
-                                terminal.printf("\n-----COMMITS-----\n");
-                                for (Commit c : commits)
-                                    terminal.printf("\n" + c + "\n");
-                                terminal.printf("\n-----COMMITS-----\n");
-                            }
-                        }
-                        break;
-                    case 9:
                         terminal.printf("\nARE YOU SURE TO LEAVE THE NETWORK?\n");
                         boolean exit = textIO.newBooleanInputReader().withDefaultValue(false).read("exit?");
                         if (exit) {
@@ -216,35 +193,6 @@ public class Example {
             }
             files.add(file);
             i++;
-        }
-
-        return files;
-    }
-
-    public static HashSet<File> removeFiles(TextTerminal terminal, TextIO textIO, HashSet<File> files) {
-        terminal.printf("\nENTER FILES NUMBER TO REMOVE\n");
-        int n = textIO.newIntInputReader()
-                .withDefaultValue(1)
-                .withMinVal(0)
-                .withMaxVal(files.size())
-                .read("Number:");
-        
-        int i = 0;
-        while (i < n) {
-            terminal.printf("\nENTER FILE " + (i + 1) + " NAME\n");
-            String name = textIO.newStringInputReader()
-                            .read("File name:");
-            File file = new File(name);
-            if (!files.contains(file)) {
-                terminal.printf("\n\"" + name + "\" FILE NOT EXIST\n");
-                continue;
-            }
-            terminal.printf("\nARE YOU SURE TO REMOVE THE FILE?\n");
-            boolean remove = textIO.newBooleanInputReader().withDefaultValue(false).read("remove?");
-            if (remove) {
-                files.remove(file);
-                i++;
-            }
         }
 
         return files;

@@ -66,13 +66,11 @@ public class Repository implements Serializable {
             this.files.clear();
             return true;
         }
-        if (!this.files.containsAll(files)) {
-            System.out.println("x");
+        if (!this.files.containsAll(files))
             return false;
-        }
 
-        this.files.clear();
-        return this.files.addAll(files);
+        this.files = (HashSet<File>) files.clone();
+        return true;
     }
 
     public boolean addCommit(int id, String message, LocalTime time) {

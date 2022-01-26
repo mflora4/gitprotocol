@@ -2,6 +2,9 @@ package it.adc.p2p;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import org.beryx.textio.TextIO;
 import org.beryx.textio.TextIoFactory;
 import org.beryx.textio.TextTerminal;
@@ -52,7 +55,7 @@ public class Example {
             while (true) {
                 printMenu(terminal);
 
-                int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(7).read("Option");
+                int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(8).read("Option");
                 String name;
                 switch (option) {
                     case 1:
@@ -70,8 +73,8 @@ public class Example {
                         name = textIO.newStringInputReader()
                                 .withDefaultValue("default-repository")
                                 .read("Repository name:");
-                        ArrayList<File> files = createFiles(terminal, textIO);
-                        if (!peer.addFilesToRepository(name, files))
+                        ArrayList<File> createdFiles = createFiles(terminal, textIO);
+                        if (!peer.addFilesToRepository(name, createdFiles))
                             terminal.printf("\nERROR IN ADDING FILES TO REPOSITORY\n");
                         else
                             terminal.printf("\nFILES ADDED TO REPOSITORY\n", name);
@@ -106,6 +109,14 @@ public class Example {
                         terminal.printf("\n" + pull.toUpperCase() + "\n");
                         break;
                     case 6:
+                        HashSet<File> files = peer.getRepository().getFiles();
+                        if (files.isEmpty())
+                            terminal.printf("\nNO COMMIT\n");
+                        else
+                            for (File f : files)
+                                terminal.printf("\n" + f.getName() + "\n");
+                        break;
+                    case 7:
                         ArrayList<Commit> commits = peer.getRepository().getCommits();
                         if (commits.isEmpty())
                             terminal.printf("\nNO COMMIT\n");
@@ -113,7 +124,7 @@ public class Example {
                             for (Commit c : commits)
                                 terminal.printf("\n" + c + "\n");
                         break;
-                    case 7:
+                    case 8:
                         terminal.printf("\nARE YOU SURE TO LEAVE THE NETWORK\n");
                         boolean exit = textIO.newBooleanInputReader().withDefaultValue(false).read("exit?");
                         if (exit) {
@@ -139,8 +150,9 @@ public class Example {
 		terminal.printf("\n3 - COMMIT\n");
 		terminal.printf("\n4 - PUSH\n");
         terminal.printf("\n5 - PULL\n");
-        terminal.printf("\n6 - SHOW COMMITS\n");
-		terminal.printf("\n7 - EXIT\n");
+        terminal.printf("\n6 - SHOW FILES\n");
+        terminal.printf("\n7 - SHOW COMMITS\n");
+		terminal.printf("\n8 - EXIT\n");
 	}
 
     public static ArrayList<File> createFiles(TextTerminal terminal, TextIO textIO) {

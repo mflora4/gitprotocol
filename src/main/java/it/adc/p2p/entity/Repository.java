@@ -28,7 +28,7 @@ public class Repository implements Serializable {
         return name;
     }
 
-    public HashSet<PeerAddress> getPeerAddresses() {
+    public HashSet<PeerAddress> getContributors() {
         return peerAddresses;
     }
 
@@ -44,7 +44,7 @@ public class Repository implements Serializable {
         return commits;
     }
 
-    public boolean addPeerAddresses(HashSet<PeerAddress> peerAddresses) {
+    public boolean addContributors(HashSet<PeerAddress> peerAddresses) {
         if (peerAddresses.isEmpty())
             return false;
         if (this.peerAddresses.containsAll(peerAddresses))

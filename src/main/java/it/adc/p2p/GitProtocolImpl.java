@@ -117,8 +117,8 @@ public class GitProtocolImpl implements GitProtocol {
 		if (check == 0)
 			return peer_id + "the repo is already updated";
 		else {
-			if (!repository.addPeerAddresses(repo.getPeerAddresses()))
-				return peer_id + "adding peer addresses error";
+			if (!repository.addContributors(repo.getContributors()))
+				return peer_id + "adding contributos error";
 			if (!repository.addFiles(repo.getFiles()))
 				return peer_id + "adding files error";
 			if (!repository.addCommits(repo.getCommits()))
@@ -150,7 +150,7 @@ public class GitProtocolImpl implements GitProtocol {
 			FuturePut futurePut = _dht.put(Number160.createHash(_repo_name)).data(new Data(repo)).start();
 			futurePut.awaitUninterruptibly();
 			if (futurePut.isSuccess()) {
-				for (PeerAddress peerAddress : repo.getPeerAddresses()) {
+				for (PeerAddress peerAddress : repo.getContributors()) {
 					if (!peerAddress.equals(_dht.peer().peerAddress())) {
 						FutureDirect futureDirect = _dht.peer().sendDirect(peerAddress).object("Peer " + id + ": pushed").start();
 						futureDirect.awaitUninterruptibly();

@@ -88,7 +88,12 @@ public class Example {
                             name = textIO.newStringInputReader()
                                     .withDefaultValue("default-repo")
                                     .read("Repo name:");
-                            files = removeFiles(terminal, textIO, files);
+                            terminal.printf("\nDO YOU WANT TO REMOVE ALL FILES?\n");
+                            boolean all = textIO.newBooleanInputReader().withDefaultValue(false).read("all files?");
+                            if (all)
+                                files.clear();
+                            else
+                                files = removeFiles(terminal, textIO, files);
                             if (!peer.removeFilesFromRepository(name, files))
                                 terminal.printf("\nERROR IN REMOVING FILES FROM REPO\n");
                             else

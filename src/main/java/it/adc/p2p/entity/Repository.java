@@ -66,9 +66,10 @@ public class Repository implements Serializable {
             this.files.clear();
             return true;
         }
-        if (!this.files.containsAll(files))
+        if (this.files.equals(files))
             return false;
 
+        this.files.clear();
         this.files = (HashSet<File>) files.clone();
         return true;
     }

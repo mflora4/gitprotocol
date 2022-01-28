@@ -91,13 +91,13 @@ public class GitProtocolImpl implements GitProtocol {
 		Repository repo = getRepoFromDHT();
 		if (repo == null || repository.checkCommits(repo.getCommits())) {
 			if (!commit)
-				return "you should do the commit";
+				return "you should do a commit";
 			
 			if (!saveRepoOnDHT())
 				return "push error";
 			else {
 				commit = false;
-				return "push done";
+				return "push done!";
 			}
 		} else
 			return "pull is required";

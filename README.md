@@ -34,29 +34,30 @@ The package `src/main/java/it/adc/p2p` provides four Java classes and an `entity
 The four Java classes are:
 - *MessageListener*: an interface for listener of messages received by a peer
 - *GitProtocol*: an interface that defines the Git protocol communication paradigm
-- *GitProtocolImpl*: an implementation of the *GitProtocol* interface that exploits TomP2P library
+- *GitProtocolImpl*: an implementation of the *GitProtocol* interface that exploits the TomP2P library
 - *Example*: an example REPL application of a peers network able to communicate using Git protocol
 
 ### Entity package
 The `entity` package provides two Java classes:
 - *Repository*: a class representing the repo
 - *Commit*: a class representing the commit
-- *SortByTime*: it allows to order commits by time, when they are added to repo
+- *SortByTime*: it allows to order the commits by time, when they are added to repo
 
 ## Other functionalities implemented
 - *getRepoFromDHT*: it searches a repo and, if the repo exists, it returns the repo
 - *saveRepoOnDHT*: it loads the repo into DHT
 - *leaveNetwork*: it allows to a peer leaving the P2P network
-- *getFiles*: it gets files that are into the repo
-- *getCommits*: it gets commits that are into the repo
+- *getFiles*: it gets the files that are into the repo
+- *getCommits*: it gets the commits that are into the repo
 
 ## Build this in a Docker container
 An example application is provided using Docker container, running on a local machine. See the Dockerfile, for the building details.
 
 First of all, you can build your docker container:
+
 `docker build --no-cache -t gitprotocol .`
 
-##### Start the master peer
+#### Start the master peer
 After that, you can start the master peer, in interactive mode (-i) and with two (-e) environment variables:
 
 `docker run -i --name MASTER-PEER -e MASTERIP="127.0.0.1" -e ID=0 gitprotocol`
@@ -65,8 +66,8 @@ The MASTERIP environment variable is the master peer ip address and the ID envir
 
 **Note that**: after the first launch, you can launch the master node using the following command: `docker start -i MASTER-PEER`
 
-##### Start a generic peer
-When master is started, you have to check up the ip address of your container:
+#### Start a generic peer
+When master is started, you have to check the ip address of your container:
 - Check the docker: `docker ps`
 - Check the IP address: `docker inspect <container ID>`
 
